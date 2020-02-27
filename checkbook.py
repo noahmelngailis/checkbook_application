@@ -8,9 +8,6 @@ def welcome_user():
     print('Password: P@ssw0rd')
     import time as t
     t.sleep(2)
-
-initialize = welcome_user()
-    
     print('Welcome to Online Usury Bank!!')
     user_name = input('Please enter a user name: ')
     if user_name != 'Codeup':
@@ -76,15 +73,15 @@ def clean_data(x = file_contents):
     return list_file
 list_file = clean_data()
 
-def account_balance(x = list_file):
-    total = sum(x)
-    print("Your balance is: " + str(total))
+def account_balance():
+    with open ('transactions.txt') as f:
+        file_contents = f.readlines()
+        list_file = [int(f.replace('\n',"")) for f in file_contents]
+    account_total = sum(list_file)
+    print("Your balance is: " + str(account_total))
     import time as t
     t.sleep(1)
-    create_menu()
-
-
-account_total = account_balance()
+    create_menu() 
 
 def make_deposit():
     transaction = input('What would you like to deposit?  ')
@@ -104,24 +101,24 @@ def make_deposit():
 def make_withdrawl():
     """this function takes in a positive number and sends the negative
     to the transactions.txt file"""
-    transaction = input('What would you like to withdrawl?  ')
+    account_total = account_balance()
+    transaction = input('What would you like to withdraw?  ')
     while (type(transaction) == 'str'
     or transaction.isdigit() == False 
     or int(transaction) < 0):
         print(f"You cannot deposit {transaction} ")
-        transaction = input('What would you like to withdrawl?  ')
-    new_trans = int(transaction)* -1
-    with open ('transactions.txt', 'a') as f:
-        f.write(str(new_trans) + '\n')
-    print(f"You successfully withdrew ${transaction}")
-    print(f"Thank you!")
-    open_file()
-    file_contents = open_file()
-    clean_data()
-    list_file = clean_data()
-    print(list_file)
-    import time as t
-    t.sleep(2)
-    create_menu()
+        transaction = input('What would you like to withdraw?  ')
+    if int(transaction) > account_total:
+        print(f"You cannot withdraw: ${transaction}")
+        transaction = input(f'You can withdraw up to ${account_total}')
+    else:
+        new_trans = int(transaction)* -1
+        with open ('transactions.txt', 'a') as f:
+            f.write(str(new_trans) + '\n')
+        print(f"You successfully withdrew ${transaction}")
+        print(f"Thank you!")
+        import time as t
+        t.sleep(2)
+        create_menu()
 
     
